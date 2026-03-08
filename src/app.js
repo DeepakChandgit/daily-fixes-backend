@@ -4,6 +4,8 @@ import helmet from "helmet";
 import cors from "cors";
 import { errorHandler } from "#middlewares/errorHandler.middleware.js";
 import { authRouter } from "#routes/auth.routes.js";
+import { userRouter } from "#routes/user.routes.js";
+import { ApiError } from "#utils";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -29,9 +31,10 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRouter);
 
 // middleware to catch req which doesn't exists
-app.all("*", (req, res, next) => {
+app.all("{*path}", (req, res, next) => {
   next(
     new ApiError({
       statusCode: 404,
