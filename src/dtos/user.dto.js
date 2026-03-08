@@ -3,6 +3,7 @@ class UserDTOResponse {
     this._id = user?._id || "";
     this.name = user?.name || "";
     this.email = user?.email || "";
+    this.phone = user?.phone || "";
     this.role = user?.role || "";
     this.avatar = user?.avatar?.url || "";
 

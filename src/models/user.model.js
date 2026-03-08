@@ -21,6 +21,15 @@ const userSchema = new Schema(
       trim: true,
       select: false,
     },
+    phone: {
+      type: String,
+      required: [true, "Phone number is required"],
+      minLength: [10, "Phone number must be exactly 10 digits"],
+      maxLength: [10, "Phone number must be exactly 10 digits"],
+      match: [/^\d{10}$/, "Please provide a valid 10-digit phone number"],
+      trim: true,
+      unique: true,
+    },
     role: {
       type: String,
       enum: ["customer", "provider", "admin"],
