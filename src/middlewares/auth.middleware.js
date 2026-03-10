@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { ApiError, asyncHandler } from "#utils";
+import { User } from "#models/user.model.js";
 
 // Cookie Config
 const cookieOptions = {
@@ -26,7 +27,21 @@ export const accessTokenMiddleware = asyncHandler(async (req, res, next) => {
 
   const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-  req.user = decodedToken;
+  if (!decodedToken?._id) {
+    throw new ApiError({ statusCode: 401, message: "Unauthorized request" });
+  }
+
+  const user = await User.findById(decodedToken._id).select("+banned");
+
+  if (user.banned === true) {
+    throw new ApiError({
+      statusCode: 401,
+      message:
+        "Access denied, You don't have permission to perform any action please contact support ",
+    });
+  }
+
+  req.user = user;
 
   next();
 });
@@ -44,7 +59,16 @@ export const refreshTokenMiddleware = asyncHandler(async (req, res, next) => {
 
   const decodedToken = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
 
-  req.user = decodedToken;
+  const user = await User.findById(decodedToken._id).select("+banned");
+
+  if (user.banned === true) {
+    throw new ApiError({
+      statusCode: 401,
+      message:
+        "Access denied, You don't have permission to perform any action please contact support ",
+    });
+  }
+  req.user = user;
 
   next();
 });

@@ -22,7 +22,7 @@ router
   .route("/me")
   .get(
     accessTokenMiddleware,
-    authorizedRolesMiddleware("customer"),
+    authorizedRolesMiddleware("customer", "provider", "admin"),
     getLoggedInUserController
   );
 
@@ -31,7 +31,7 @@ router
   .patch(
     accessTokenMiddleware,
     validate(updateUserValidationSchema),
-    authorizedRolesMiddleware("customer"),
+    authorizedRolesMiddleware("customer", "provider", "admin"),
     updateUserController
   );
 
@@ -39,7 +39,7 @@ router
   .route("/update/avatar")
   .patch(
     accessTokenMiddleware,
-    authorizedRolesMiddleware("customer"),
+    authorizedRolesMiddleware("customer", "provider", "admin"),
     upload.single("avatar"),
     updateUserAvatarController
   );

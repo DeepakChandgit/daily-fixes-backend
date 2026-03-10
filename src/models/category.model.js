@@ -5,19 +5,24 @@ const categorySchema = new Schema(
     name: {
       type: String,
       required: [true, "Category name is required"],
-      unique: true,
+      unique: [true, "Category already exits"],
       trim: true,
-    },
-    description: {
-      type: String,
-      required: [
-        true,
-        "Category description helps users understand the services offered",
-      ],
     },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    image: {
+      publicId: {
+        type: String,
+      },
+      resource: {
+        type: String,
+        default: "image",
+      },
+      url: {
+        type: String,
+      },
     },
   },
   { timestamps: true }

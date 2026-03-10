@@ -19,7 +19,7 @@ export const errorHandler = (err, req, res, next) => {
   }
   if (err.name === "CastError") {
     statusCode = 400;
-    message = `Resource not found. Invalid: ${err.path}`;
+    message = `Resource not found. Invalid: ${err.message}`;
   }
 
   return res.status(statusCode || 500).json({

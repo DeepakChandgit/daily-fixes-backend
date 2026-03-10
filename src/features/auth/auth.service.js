@@ -42,7 +42,9 @@ export const loginUserService = async ({ email, password }) => {
     });
   }
 
-  const loggedInUser = await User.findOne({ email }).select("+password");
+  const loggedInUser = await User.findOne({ email }).select(
+    "+password +banned"
+  );
   if (!loggedInUser) {
     throw new ApiError({
       statusCode: 401,
@@ -54,7 +56,7 @@ export const loginUserService = async ({ email, password }) => {
   if (!passwordIsValid) {
     throw new ApiError({ statusCode: 401, message: "Invalid credentials" });
   }
-  if (loggedInUser.banned) {
+  if (loggedInUser.banned === true) {
     throw new ApiError({
       statusCode: 403,
       message: "Account is disabled contact administrator",
@@ -70,9 +72,9 @@ export const loginUserService = async ({ email, password }) => {
     });
   }
 
-  const hasedRefreshToken = await bcrypt.hash(refreshToken, 10);
+  const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
 
-  loggedInUser.refreshToken = hasedRefreshToken;
+  loggedInUser.refreshToken = hashedRefreshToken;
   await loggedInUser.save({ validateBeforeSave: false });
 
   return { loggedInUser, accessToken, refreshToken };
